@@ -1,18 +1,35 @@
-// src/app/board/page.tsx
-// 이 파일은 폴더 구조에 따라 자동으로 "/board" URL에 매핑됩니다.
-// (App Router 규칙: app/board/page.tsx → /board)
-//
-// 별도의 "use client" 선언이 없으므로 이 컴포넌트는 '서버 컴포넌트'입니다.
-// 지금은 정적인 화면만 보여주므로 서버 컴포넌트로 충분합니다.
-// (useState 같은 브라우저 동작이 필요해지면 그때 "use client"를 추가합니다 → 4단계)
+// src/app/board/page.tsx → "/board"
+// 게시글 목록 화면입니다. Mock 데이터를 map으로 순회하며 화면에 그립니다.
+
+import Link from "next/link";
+import { posts } from "@/data/posts";
 
 export default function BoardPage() {
   return (
     <main className="mx-auto w-full max-w-3xl p-8">
       <h1 className="text-2xl font-bold">게시판</h1>
-      <p className="mt-2 text-gray-500">
-        여기에 게시글 목록이 표시될 예정입니다. (2단계에서 구현)
-      </p>
+
+      {/*
+        배열 렌더링: posts 배열을 map으로 돌면서 게시글마다 <li>를 만듭니다.
+        - key={post.id} : React가 각 항목을 구분하는 식별자. 배열 렌더링에는 필수입니다.
+          (key가 없으면 목록이 바뀔 때 React가 비효율적으로 다시 그리고, 경고도 뜹니다.)
+        - Link href={`/board/${post.id}`} : 클릭하면 상세 페이지로 이동 (상세는 3단계에서 구현)
+      */}
+      <ul className="mt-6 divide-y border-t border-b">
+        {posts.map((post) => (
+          <li key={post.id}>
+            <Link
+              href={`/board/${post.id}`}
+              className="flex items-center justify-between gap-4 py-3 hover:bg-gray-50"
+            >
+              <span className="font-medium">{post.title}</span>
+              <span className="shrink-0 text-sm text-gray-500">
+                {post.author} · {post.createdAt}
+              </span>
+            </Link>
+          </li>
+        ))}
+      </ul>
     </main>
   );
 }
